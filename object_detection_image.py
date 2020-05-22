@@ -143,11 +143,15 @@ if __name__ == '__main__':
     TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, '{}.jpg'.format(i)) for i in range(0, 10)]
 
     import skimage.io
+    i = 0
     for image_path in TEST_IMAGE_PATHS:
         image_np = skimage.io.imread(image_path)
         image_np = di.run_detect(image_np)[0]
 
         plt.figure(figsize=IMAGE_SIZE)
         plt.imshow(image_np)
-        plt.savefig("prediction"+ imagepath +".png")
+        plt.savefig(str(i)+".png")
         # plt.show()
+        print("Generated "+str(i)+".png")
+        i += 1
+        
