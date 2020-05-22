@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 # -*- coding=utf-8 -*-
+# File from https://github.com/jzhugithub/object_detection/blob/master/object_detection_image.py
 
 from __future__ import absolute_import
 from __future__ import division
@@ -13,7 +14,8 @@ import sys
 import time
 
 # Add object_detection to system path
-OBJECT_DETECTION_PATH = '/home/zj/my_workspace/object_detection/object_detection'
+OBJECT_DETECTION_PATH = '/content/gdrive/My Drive/Desktop/models/research/object_detection'
+sys.path.append('/content/gdrive/My Drive/Desktop/models/research')
 sys.path.append(OBJECT_DETECTION_PATH)
 
 # Object detection imports
@@ -106,7 +108,11 @@ class DetectImage(object):
             np.squeeze(scores),
             self.category_index,
             use_normalized_coordinates=True,
-            line_thickness=8)
+            min_score_thresh = 0.9,
+            line_thickness=2,
+            skip_labels = True,
+            skip_scores=True,
+            max_boxes_to_draw = 100)
         return image_np, boxes, scores, classes, num
 
     frame_count = 50
@@ -123,18 +129,18 @@ class DetectImage(object):
 
 if __name__ == '__main__':
     # Path to frozen detection graph. This is the actual model that is used for the object detection.
-    PATH_TO_CKPT = '/home/zj/database_temp/ssd_mobilenet_v1_coco_11_06_2017/frozen_inference_graph.pb'
+    PATH_TO_CKPT = 'inference_graph/frozen_inference_graph.pb'
     # List of the strings that is used to add correct label for each box.
-    PATH_TO_LABELS = os.path.join(OBJECT_DETECTION_PATH, 'data/mscoco_label_map.pbtxt')
-    NUM_CLASSES = 90
+    PATH_TO_LABELS = os.path.join(OBJECT_DETECTION_PATH, 'training/labelmap.pbtxt')
+    NUM_CLASSES = 1
 
     # Create DetectImage class
     di = DetectImage(PATH_TO_CKPT, PATH_TO_LABELS, NUM_CLASSES)
 
     # Size, in inches, of the output images.
     IMAGE_SIZE = (12, 8)
-    PATH_TO_TEST_IMAGES_DIR = os.path.join(OBJECT_DETECTION_PATH, 'test_images')
-    TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3)]
+    PATH_TO_TEST_IMAGES_DIR = os.path.join(OBJECT_DETECTION_PATH, 'images/test')
+    TEST_IMAGE_PATHS = [os.path.join(PATH_TO_TEST_IMAGES_DIR, '{}.jpg'.format(i)) for i in range(0, 10)]
 
     import skimage.io
     for image_path in TEST_IMAGE_PATHS:
@@ -143,4 +149,5 @@ if __name__ == '__main__':
 
         plt.figure(figsize=IMAGE_SIZE)
         plt.imshow(image_np)
-        plt.show()
+        plt.savefig("prediction"+ imagepath +".png")
+        # plt.show()
